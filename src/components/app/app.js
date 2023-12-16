@@ -90,8 +90,7 @@ export default class App extends React.Component {
   };
 
   render() {
-    let e = 13234223;
-       const { stateFilter, stateTasks } = this.state;
+    const { stateFilter, stateTasks } = this.state;
 
     const toDo = stateTasks.reduce((acc, el) => (el.complete ? acc : acc + 1), 0);
     let tasks;
