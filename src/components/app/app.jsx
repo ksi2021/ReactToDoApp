@@ -6,35 +6,57 @@ import Footer from '../footer/footer';
 import TaskList from '../taskList/taskList';
 
 export default class App extends React.Component {
-  startID = 300;
+  constructor(props) {
+    super(props);
 
-  state = {
-    tasks: [
-      {
-        title: 'Complete task',
-        id: 1,
-        complete: true,
-        date: new Date(),
-      },
-      {
-        title: 'Editing task',
-        id: 2,
-        complete: false,
-        date: new Date(),
-      },
-      {
-        title: 'Active task',
-        id: 3,
-        complete: false,
-        date: new Date(),
-      },
-    ],
-    filter: 'all',
-  };
+    this.uid = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
+
+    this.state = {
+      tasks: [
+        {
+          title: 'Complete task',
+          id: this.uid(),
+          complete: true,
+          date: new Date(),
+        },
+        {
+          title: 'Editing task',
+          id: this.uid(),
+          complete: false,
+          date: new Date(),
+        },
+        {
+          title: 'Active task',
+          id: this.uid(),
+          complete: false,
+          date: new Date(),
+        },
+      ],
+      filter: 'all',
+    };
+  }
 
   deleteTask = (id) => {
     this.setState(({ tasks }) => {
       const newTasks = tasks.reduce((acc, el) => (el.id !== id ? [...acc, el] : acc), []);
+      return {
+        tasks: newTasks,
+      };
+    });
+  };
+
+  updateTask = (task) => {
+    this.setState(({ tasks }) => {
+      const newTasks = tasks.reduce((acc, el) => {
+        if (el.id !== task.id) return [...acc, el];
+        return [
+          ...acc,
+          {
+            ...el,
+            title: task.title,
+          },
+        ];
+      }, []);
       return {
         tasks: newTasks,
       };
@@ -74,7 +96,7 @@ export default class App extends React.Component {
         ...tasks,
         {
           title: text,
-          id: this.startID++,
+          id: this.uid(),
           complete: false,
           date: new Date(),
         },
@@ -102,7 +124,7 @@ export default class App extends React.Component {
       <section className="todoapp">
         <Header createTask={this.createTask} />
         <section className="main">
-          <TaskList onDelete={this.deleteTask} tasks={tasks} onComplete={this.completeTask} />
+          <TaskList onDelete={this.deleteTask} tasks={tasks} onComplete={this.completeTask} updateTask={this.updateTask} />
           <Footer filter={stateFilter} setFilter={this.setFilter} clearCompleted={this.clearCompleted} toDo={toDo} />
         </section>
       </section>

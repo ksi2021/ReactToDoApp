@@ -7,9 +7,9 @@
   margin: 1rem 0;
 }
 
-/*:focus {*/
-/*  outline: 0;*/
-/*}*/
+*:focus {
+  outline: 0;
+}
 
 .hidden {
   display: none;
@@ -78,7 +78,7 @@ button {
   -moz-osx-font-smoothing: grayscale;
 }
 
-button:focus {
+button:focus  {
   outline: 0;
 }
 

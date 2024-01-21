@@ -1,6 +1,8 @@
 import './taskFilter.css';
+import Label from './label';
 
 function TaskFilter({ filter, setFilter }) {
+  const params = ['All', 'Active', 'Completed'];
   return (
     <ul
       className="filters"
@@ -10,15 +12,9 @@ function TaskFilter({ filter, setFilter }) {
         }
       }}
     >
-      <li>
-        <button className={filter === 'all' ? 'selected' : ''}>All</button>
-      </li>
-      <li>
-        <button className={filter === 'active' ? 'selected' : ''}>Active</button>
-      </li>
-      <li>
-        <button className={filter === 'completed' ? 'selected' : ''}>Completed</button>
-      </li>
+      {params.map((val, index) => (
+        <Label key={index} filter={filter} value={val} />
+      ))}
     </ul>
   );
 }
