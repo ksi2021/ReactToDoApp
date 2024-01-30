@@ -18,18 +18,30 @@ export default class App extends React.Component {
           id: this.uid(),
           complete: true,
           date: new Date(),
+          timer: {
+            min: 1,
+            sec: 0,
+          },
         },
         {
           title: 'Editing task',
           id: this.uid(),
           complete: false,
           date: new Date(),
+          timer: {
+            min: 1,
+            sec: 0,
+          },
         },
         {
           title: 'Active task',
           id: this.uid(),
           complete: false,
           date: new Date(),
+          timer: {
+            min: 1,
+            sec: 0,
+          },
         },
       ],
       filter: 'all',
@@ -90,15 +102,19 @@ export default class App extends React.Component {
     });
   };
 
-  createTask = (text) => {
+  createTask = (task) => {
     this.setState(({ tasks }) => {
       const newTasks = [
         ...tasks,
         {
-          title: text,
+          title: task.text,
           id: this.uid(),
           complete: false,
           date: new Date(),
+          timer: {
+            min: task.min || 0,
+            sec: task.sec || 0,
+          },
         },
       ];
       return { tasks: newTasks };
@@ -124,7 +140,12 @@ export default class App extends React.Component {
       <section className="todoapp">
         <Header createTask={this.createTask} />
         <section className="main">
-          <TaskList onDelete={this.deleteTask} tasks={tasks} onComplete={this.completeTask} updateTask={this.updateTask} />
+          <TaskList
+            onDelete={this.deleteTask}
+            tasks={tasks}
+            onComplete={this.completeTask}
+            updateTask={this.updateTask}
+          />
           <Footer filter={stateFilter} setFilter={this.setFilter} clearCompleted={this.clearCompleted} toDo={toDo} />
         </section>
       </section>

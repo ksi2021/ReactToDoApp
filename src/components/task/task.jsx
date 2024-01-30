@@ -4,29 +4,30 @@ import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import PropTypes from 'prop-types';
 
-// function Task({ task, onDelete, onComplete })
 class Task extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { editing: false };
-  }
+  state = { editing: false };
 
   edit() {
-    this.setState(({editing}) => {
+    this.setState(({ editing }) => {
       return {
         editing: !editing,
       };
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
   editTitle(e) {
-    if(e.target.elements[0].value.trim()){
-      const newTask = {...this.props.task , title: e.target.elements[0].value.trim()};
+    if (e.target.elements[0].value.trim()) {
+      const newTask = { ...this.props.task, title: e.target.elements[0].value.trim() };
       this.props.updateTask(newTask);
     }
 
     this.edit();
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  timerFormat(val) {
+    if (val < 10) return `0${val}`;
+    return val;
   }
 
   render() {
@@ -41,7 +42,14 @@ class Task extends React.Component {
             type="checkbox"
           />
           <label>
-            <span className="description">{this.props.task.title}</span>
+            <span className="title">{this.props.task.title}</span>
+            <span className="description">
+              <button className="icon icon-play" onClick={() => {}}></button>
+              <button className="icon icon-pause" onClick={() => {}}></button>
+              {/* time start */}
+              {this.timerFormat(this.props.task.timer.min)}:{this.timerFormat(this.props.task.timer.sec)}
+              {/* time end */}
+            </span>
             <span className="created">
               Создано{' '}
               {formatDistanceToNow(this.props.task.date, {
