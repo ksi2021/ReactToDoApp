@@ -78,7 +78,7 @@ button {
   -moz-osx-font-smoothing: grayscale;
 }
 
-button:focus  {
+button:focus {
   outline: 0;
 }
 

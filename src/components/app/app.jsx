@@ -127,6 +127,24 @@ export default class App extends React.Component {
     }));
   };
 
+  updateTime = (id, time) => {
+    this.setState(({ tasks }) => {
+      const newTasks = tasks.reduce((acc, task) => {
+        if (task.id !== id) return [...acc, task];
+        return [
+          ...acc,
+          {
+            ...task,
+            timer: time,
+          },
+        ];
+      }, []);
+      return {
+        tasks: newTasks,
+      };
+    });
+  };
+
   render() {
     const { filter: stateFilter, tasks: stateTasks } = this.state;
 
@@ -145,6 +163,7 @@ export default class App extends React.Component {
             tasks={tasks}
             onComplete={this.completeTask}
             updateTask={this.updateTask}
+            updateTime={this.updateTime}
           />
           <Footer filter={stateFilter} setFilter={this.setFilter} clearCompleted={this.clearCompleted} toDo={toDo} />
         </section>

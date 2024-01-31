@@ -4,8 +4,12 @@ import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import PropTypes from 'prop-types';
 
+import Timer from '../timer/timer';
+
 class Task extends React.Component {
-  state = { editing: false };
+  state = {
+    editing: false,
+  };
 
   edit() {
     this.setState(({ editing }) => {
@@ -24,12 +28,6 @@ class Task extends React.Component {
     this.edit();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  timerFormat(val) {
-    if (val < 10) return `0${val}`;
-    return val;
-  }
-
   render() {
     const liClasses = [this.props.task.complete ? 'completed' : '', this.state.editing ? 'editing' : ''];
     return (
@@ -43,13 +41,7 @@ class Task extends React.Component {
           />
           <label>
             <span className="title">{this.props.task.title}</span>
-            <span className="description">
-              <button className="icon icon-play" onClick={() => {}}></button>
-              <button className="icon icon-pause" onClick={() => {}}></button>
-              {/* time start */}
-              {this.timerFormat(this.props.task.timer.min)}:{this.timerFormat(this.props.task.timer.sec)}
-              {/* time end */}
-            </span>
+            <Timer task={this.props.task} updateTime={this.props.updateTime} />
             <span className="created">
               Создано{' '}
               {formatDistanceToNow(this.props.task.date, {

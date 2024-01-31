@@ -4,11 +4,18 @@ import PropTypes from 'prop-types';
 import Task from '../task/task';
 import './taskList.css';
 
-function TaskList({ onDelete, tasks, onComplete, updateTask }) {
+function TaskList({ onDelete, tasks, onComplete, updateTask, updateTime }) {
   return (
     <ul className="todo-list">
       {tasks.map((el) => (
-        <Task task={el} key={el.id} onDelete={onDelete} onComplete={onComplete} updateTask={updateTask} />
+        <Task
+          task={el}
+          key={el.id}
+          onDelete={onDelete}
+          onComplete={onComplete}
+          updateTask={updateTask}
+          updateTime={updateTime}
+        />
       ))}
     </ul>
   );
