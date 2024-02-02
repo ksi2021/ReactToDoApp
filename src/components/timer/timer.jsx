@@ -16,6 +16,7 @@ export default class Timer extends React.Component {
   }
 
   startTimer() {
+    if (this.state.timer) return;
     if (!this.state.timer) this.setState({ timer: true });
     this.timerWork();
   }
@@ -49,13 +50,16 @@ export default class Timer extends React.Component {
   }
 
   render() {
+    const button = !this.state.timer ? (
+      <button className="icon icon-play" onClick={() => this.startTimer()}></button>
+    ) : (
+      <button className="icon icon-pause" onClick={() => this.stopTimer()}></button>
+    );
+
     const { time } = this.state;
     return (
       <span className="description">
-        {/* timer buttons */}
-        <button className="icon icon-play" onClick={() => this.startTimer()}></button>
-        <button className="icon icon-pause" onClick={() => this.stopTimer()}></button>
-        {/* timer */}
+        {button}
         {this.timerFormat(time.min)}:{this.timerFormat(time.sec)}
       </span>
     );
