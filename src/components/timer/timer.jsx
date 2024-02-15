@@ -1,67 +1,69 @@
-import React from 'react';
-
+import React, { useState, useEffect, useRef } from 'react';
 import './timer.css';
 
-export default class Timer extends React.Component {
-  state = {
-    time: this.props.task.timer,
-    timer: false,
+function Timer({ task, updateTime }) {
+  const [timer, setTimer] = useState(false);
+  const [time, setTime] = useState(task.timer);
+  const timeRef = useRef(task.timer);
+  const timeOut = useRef(null);
+
+  const timerFormat = (val) => (val < 10 ? `0${val}` : val);
+
+  useEffect(() => {
+    timeRef.current = time;
+  }, [time]);
+  useEffect(() => {
+    return () => {
+      clearTimeout(timeOut.current);
+      updateTime(task.id, timeRef.current);
+    };
+  }, []);
+
+  const stopTimer = () => {
+    clearTimeout(timeOut.current);
+    setTimer(false);
   };
 
-  timerFormat = (val) => (val < 10 ? `0${val}` : val);
-
-  componentWillUnmount() {
-    clearTimeout(this.timeOut);
-    this.props.updateTime(this.props.task.id, this.state.time);
-  }
-
-  startTimer() {
-    if (this.state.timer) return;
-    if (!this.state.timer) this.setState({ timer: true });
-    this.timerWork();
-  }
-
-  timerWork() {
+  const timerWork = () => {
     const startTime = Date.now();
-    const targetTime = startTime + this.state.time.min * 60 * 1000 + this.state.time.sec * 1000 + 1000;
+    const targetTime = startTime + time.min * 60 * 1000 + time.sec * 1000 + 1000;
 
     const updateTimer = () => {
       const currentTime = Date.now();
       const timeLeft = targetTime - currentTime;
 
       if (timeLeft <= 0) {
-        this.stopTimer();
-        this.setState({ time: { min: 0, sec: 0 } });
+        stopTimer();
+        setTime({ min: 0, sec: 0 });
       } else {
         const min = Math.floor(timeLeft / (60 * 1000));
         const sec = Math.floor((timeLeft - min * 60 * 1000) / 1000);
-        this.setState({ time: { min, sec } });
+        setTime({ min, sec });
       }
 
-      this.timeOut = setTimeout(updateTimer, 1000);
+      timeOut.current = setTimeout(updateTimer, 1000);
     };
 
-    this.timeOut = setTimeout(updateTimer, 1000);
-  }
+    timeOut.current = setTimeout(updateTimer, 1000);
+  };
 
-  stopTimer() {
-    clearTimeout(this.timeOut);
-    this.setState({ timer: false });
-  }
+  const startTimer = () => {
+    if (timer) return;
+    if (!timer) setTimer(true);
+    timerWork();
+  };
 
-  render() {
-    const button = !this.state.timer ? (
-      <button className="icon icon-play" onClick={() => this.startTimer()}></button>
-    ) : (
-      <button className="icon icon-pause" onClick={() => this.stopTimer()}></button>
-    );
+  const button = !timer ? (
+    <button className="icon icon-play" onClick={() => startTimer()}></button>
+  ) : (
+    <button className="icon icon-pause" onClick={() => stopTimer()}></button>
+  );
 
-    const { time } = this.state;
-    return (
-      <span className="description">
-        {button}
-        {this.timerFormat(time.min)}:{this.timerFormat(time.sec)}
-      </span>
-    );
-  }
+  return (
+    <span className="description">
+      {button}
+      {timerFormat(time.min)}:{timerFormat(time.sec)}
+    </span>
+  );
 }
+export default Timer;
