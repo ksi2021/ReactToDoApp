@@ -5,61 +5,52 @@ import Header from '../header/header';
 import Footer from '../footer/footer';
 import TaskList from '../taskList/taskList';
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
+function App() {
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
+  const [tasks, setTasks] = React.useState([
+    {
+      title: 'Complete task',
+      id: uid(),
+      complete: true,
+      date: new Date(),
+      timer: {
+        min: 1,
+        sec: 0,
+      },
+    },
+    {
+      title: 'Editing task',
+      id: uid(),
+      complete: false,
+      date: new Date(),
+      timer: {
+        min: 1,
+        sec: 0,
+      },
+    },
+    {
+      title: 'Active task',
+      id: uid(),
+      complete: false,
+      date: new Date(),
+      timer: {
+        min: 1,
+        sec: 0,
+      },
+    },
+  ]);
+  const [filter, setFilters] = React.useState('all');
 
-    this.uid = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
-
-    this.state = {
-      tasks: [
-        {
-          title: 'Complete task',
-          id: this.uid(),
-          complete: true,
-          date: new Date(),
-          timer: {
-            min: 1,
-            sec: 0,
-          },
-        },
-        {
-          title: 'Editing task',
-          id: this.uid(),
-          complete: false,
-          date: new Date(),
-          timer: {
-            min: 1,
-            sec: 0,
-          },
-        },
-        {
-          title: 'Active task',
-          id: this.uid(),
-          complete: false,
-          date: new Date(),
-          timer: {
-            min: 1,
-            sec: 0,
-          },
-        },
-      ],
-      filter: 'all',
-    };
-  }
-
-  deleteTask = (id) => {
-    this.setState(({ tasks }) => {
-      const newTasks = tasks.reduce((acc, el) => (el.id !== id ? [...acc, el] : acc), []);
-      return {
-        tasks: newTasks,
-      };
+  const deleteTask = (id) => {
+    setTasks((_tasks) => {
+      const newTasks = _tasks.reduce((acc, el) => (el.id !== id ? [...acc, el] : acc), []);
+      return newTasks;
     });
   };
 
-  updateTask = (task) => {
-    this.setState(({ tasks }) => {
-      const newTasks = tasks.reduce((acc, el) => {
+  const updateTask = (task) => {
+    setTasks((_tasks) => {
+      const newTasks = _tasks.reduce((acc, el) => {
         if (el.id !== task.id) return [...acc, el];
         return [
           ...acc,
@@ -69,15 +60,13 @@ export default class App extends React.Component {
           },
         ];
       }, []);
-      return {
-        tasks: newTasks,
-      };
+      return newTasks;
     });
   };
 
-  completeTask = (id) => {
-    this.setState(({ tasks }) => {
-      const newTasks = tasks.reduce((acc, el) => {
+  const completeTask = (id) => {
+    setTasks((_tasks) => {
+      const newTasks = _tasks.reduce((acc, el) => {
         if (el.id !== id) return [...acc, el];
         return [
           ...acc,
@@ -87,28 +76,24 @@ export default class App extends React.Component {
           },
         ];
       }, []);
-      return {
-        tasks: newTasks,
-      };
+      return newTasks;
     });
   };
 
-  clearCompleted = () => {
-    this.setState(({ tasks }) => {
-      const leftTasks = tasks.reduce((acc, el) => (el.complete ? acc : [...acc, el]), []);
-      return {
-        tasks: leftTasks,
-      };
+  const clearCompleted = () => {
+    setTasks((_tasks) => {
+      const leftTasks = _tasks.reduce((acc, el) => (el.complete ? acc : [...acc, el]), []);
+      return leftTasks;
     });
   };
 
-  createTask = (task) => {
-    this.setState(({ tasks }) => {
+  const createTask = (task) => {
+    setTasks((_tasks) => {
       const newTasks = [
-        ...tasks,
+        ..._tasks,
         {
           title: task.text,
-          id: this.uid(),
+          id: uid(),
           complete: false,
           date: new Date(),
           timer: {
@@ -117,19 +102,17 @@ export default class App extends React.Component {
           },
         },
       ];
-      return { tasks: newTasks };
+      return newTasks;
     });
   };
 
-  setFilter = (value) => {
-    this.setState(() => ({
-      filter: value,
-    }));
+  const setFilter = (value) => {
+    setFilters(() => value);
   };
 
-  updateTime = (id, time) => {
-    this.setState(({ tasks }) => {
-      const newTasks = tasks.reduce((acc, task) => {
+  const updateTime = (id, time) => {
+    setTasks((_tasks) => {
+      const newTasks = _tasks.reduce((acc, task) => {
         if (task.id !== id) return [...acc, task];
         return [
           ...acc,
@@ -139,35 +122,30 @@ export default class App extends React.Component {
           },
         ];
       }, []);
-      return {
-        tasks: newTasks,
-      };
+      return newTasks;
     });
   };
 
-  render() {
-    const { filter: stateFilter, tasks: stateTasks } = this.state;
-
-    const toDo = stateTasks.reduce((acc, el) => (el.complete ? acc : acc + 1), 0);
-    let tasks;
-    if (stateFilter === 'all') tasks = stateTasks;
-    else if (stateFilter === 'completed')
-      tasks = stateTasks.reduce((acc, el) => (el.complete ? [...acc, el] : acc), []);
-    else tasks = stateTasks.reduce((acc, el) => (!el.complete ? [...acc, el] : acc), []);
-    return (
-      <section className="todoapp">
-        <Header createTask={this.createTask} />
-        <section className="main">
-          <TaskList
-            onDelete={this.deleteTask}
-            tasks={tasks}
-            onComplete={this.completeTask}
-            updateTask={this.updateTask}
-            updateTime={this.updateTime}
-          />
-          <Footer filter={stateFilter} setFilter={this.setFilter} clearCompleted={this.clearCompleted} toDo={toDo} />
-        </section>
+  const toDo = tasks.reduce((acc, el) => (el.complete ? acc : acc + 1), 0);
+  // eslint-disable-next-line no-underscore-dangle
+  let _tasks = [];
+  if (filter === 'all') _tasks = tasks;
+  else if (filter === 'completed') _tasks = tasks.reduce((acc, el) => (el.complete ? [...acc, el] : acc), []);
+  else _tasks = tasks.reduce((acc, el) => (!el.complete ? [...acc, el] : acc), []);
+  return (
+    <section className="todoapp">
+      <Header createTask={createTask} />
+      <section className="main">
+        <TaskList
+          onDelete={deleteTask}
+          tasks={_tasks}
+          onComplete={completeTask}
+          updateTask={updateTask}
+          updateTime={updateTime}
+        />
+        <Footer filter={filter} setFilter={setFilter} clearCompleted={clearCompleted} toDo={toDo} />
       </section>
-    );
-  }
+    </section>
+  );
 }
+export default App;
