@@ -6,67 +6,58 @@ import PropTypes from 'prop-types';
 
 import Timer from '../timer/timer';
 
-class Task extends React.Component {
-  state = {
-    editing: false,
+function Task(props) {
+  const [editing, setEditing] = React.useState(false);
+
+  const edit = () => {
+    setEditing((e) => !e);
   };
 
-  edit() {
-    this.setState(({ editing }) => {
-      return {
-        editing: !editing,
-      };
-    });
-  }
-
-  editTitle(e) {
+  const editTitle = (e) => {
     if (e.target.elements[0].value.trim()) {
-      const newTask = { ...this.props.task, title: e.target.elements[0].value.trim() };
-      this.props.updateTask(newTask);
+      const newTask = { ...props.task, title: e.target.elements[0].value.trim() };
+      props.updateTask(newTask);
     }
+    edit();
+  };
 
-    this.edit();
-  }
+  const liClasses = [props.task.complete ? 'completed' : '', editing ? 'editing' : ''];
+  return (
+    <li className={liClasses.join(' ')}>
+      <div className="view">
+        <input
+          className="toggle"
+          checked={props.task.complete}
+          onChange={() => props.onComplete(props.task.id)}
+          type="checkbox"
+        />
+        <label>
+          <span className="title">{props.task.title}</span>
+          <Timer task={props.task} updateTime={props.updateTime} />
+          <span className="created">
+            Создано{' '}
+            {formatDistanceToNow(props.task.date, {
+              includeSeconds: true,
+              locale: ru,
+            })}{' '}
+            назад
+          </span>
+        </label>
+        <button onClick={() => edit()} className="icon icon-edit" />
+        <button onClick={() => props.onDelete(props.task.id)} className="icon icon-destroy" />
+      </div>
 
-  render() {
-    const liClasses = [this.props.task.complete ? 'completed' : '', this.state.editing ? 'editing' : ''];
-    return (
-      <li className={liClasses.join(' ')}>
-        <div className="view">
-          <input
-            className="toggle"
-            checked={this.props.task.complete}
-            onChange={() => this.props.onComplete(this.props.task.id)}
-            type="checkbox"
-          />
-          <label>
-            <span className="title">{this.props.task.title}</span>
-            <Timer task={this.props.task} updateTime={this.props.updateTime} />
-            <span className="created">
-              Создано{' '}
-              {formatDistanceToNow(this.props.task.date, {
-                includeSeconds: true,
-                locale: ru,
-              })}{' '}
-              назад
-            </span>
-          </label>
-          <button onClick={() => this.edit()} className="icon icon-edit" />
-          <button onClick={() => this.props.onDelete(this.props.task.id)} className="icon icon-destroy" />
-        </div>
-
-        <form
-          action=""
-          onSubmit={(e) => {
-            e.preventDefault();
-            this.editTitle(e);
-          }}
-        >
-          <input type="text" className="edit" defaultValue={this.props.task.title} />
-        </form>
-      </li>
-    );
-  }
+      <form
+        action=""
+        onSubmit={(e) => {
+          e.preventDefault();
+          editTitle(e);
+        }}
+      >
+        <input type="text" className="edit" defaultValue={props.task.title} />
+      </form>
+    </li>
+  );
 }
 
 Task.propTypes = {

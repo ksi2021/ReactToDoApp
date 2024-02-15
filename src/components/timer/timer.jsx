@@ -8,7 +8,6 @@ function Timer({ task, updateTime }) {
   const timeOut = useRef(null);
 
   const timerFormat = (val) => (val < 10 ? `0${val}` : val);
-
   useEffect(() => {
     timeRef.current = time;
   }, [time]);
