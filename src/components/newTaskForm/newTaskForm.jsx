@@ -10,7 +10,7 @@ function NewTaskForm({ createTask }) {
   const title = useRef();
   const min = useRef();
   const sec = useRef();
-
+  const reg = /^[0-9]/;
   return (
     <form
       action=""
@@ -18,11 +18,16 @@ function NewTaskForm({ createTask }) {
       onSubmit={(e) => {
         e.preventDefault();
 
-        if (trim(title) && (trim(min) || trim(sec))) {
+        const regMin = reg.test(min.current.value || 0);
+        const regSec = reg.test(sec.current.value || 0);
+        if (trim(title) && (trim(min) || trim(sec)) && regMin && regSec) {
           createTask({ text: trim(title), min: trim(min), sec: trim(sec) });
           title.current.value = '';
           min.current.value = '';
           sec.current.value = '';
+        } else {
+          console.log(trim(title), trim(min), trim(sec),regSec ,regMin);
+          alert('невалидные данные');
         }
       }}
     >
