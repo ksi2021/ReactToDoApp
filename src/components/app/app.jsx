@@ -89,7 +89,7 @@ function App() {
 
   const createTask = (task) => {
     setTasks((_tasks) => {
-      const targetTime = task.min * 60 * 1000 + task.sec * 1000 ;
+      const targetTime = task.min * 60 * 1000 + task.sec * 1000;
       const min = Math.floor(targetTime / (60 * 1000));
       const sec = Math.floor((targetTime - min * 60 * 1000) / 1000);
       const newTasks = [

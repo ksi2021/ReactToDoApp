@@ -26,7 +26,7 @@ function NewTaskForm({ createTask }) {
           min.current.value = '';
           sec.current.value = '';
         } else {
-          console.log(trim(title), trim(min), trim(sec),regSec ,regMin);
+          // eslint-disable-next-line no-alert
           alert('невалидные данные');
         }
       }}
